@@ -2,10 +2,10 @@
 #include "stdafx.h"
 #include "Operation.h"
 
-class InsertOPeration :public Operation
+class InsertOpration :public Operation
 {
 public:
-	InsertOPeration();
+	InsertOperation();
 	virtual Table exec();
 	string tableName;
 	vector<Data> data;
