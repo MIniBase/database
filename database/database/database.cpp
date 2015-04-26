@@ -22,42 +22,7 @@ vector<string> split(string str, string pattern)
 	}
 	return result;
 }
-vector<string> splitnotbracket(string str, string pattern)//对split函数做出修改，使得不会分割()中的内容
-{
-	std::string::size_type pos;
-	std::string::size_type bracketl;
-	std::string::size_type bracketr;
-	std::vector<std::string> result;
-	str += pattern;//扩展字符串以方便操作
-	int size = str.size();
 
-	for (int i = 0; i<size; i++)
-	{
-		if (str.at(i) != '(')
-		{
-			pos = str.find(pattern, i);
-			if (pos < size)
-			{
-				std::string s = str.substr(i, pos - i);
-				if (pos - i != 0)
-					result.push_back(s);
-				i = pos + pattern.size() - 1;
-			}
-		}
-		else
-		{
-			pos = str.find(")", i);
-			if (pos < size)
-			{
-				std::string s = str.substr(i, pos - i + 1);
-				if (pos - i != 0)
-					result.push_back(s);
-				i = pos + pattern.size() - 1;
-			}
-		}
-	}
-	return result;
-}
 vector<string> split(string str, string pattern, string pattern2)//去掉括号函数creat时使用
 {
 	std::string::size_type pos;
@@ -192,8 +157,6 @@ fuzhi:
 		temp.isRightConst = TRUE;
 		temp.rightData = rd;
 	}
-	if (temp.isLeftConst&&temp.isRightConst)
-		cerr << "Condition Not Valid" << endl;
 	return temp;
 }
 bool issubQuery(string str)
@@ -263,8 +226,10 @@ Operation *parser(string t)
 		} 
 		op = new QueryOperation(TC, table, conds);
 	}
-	else if(type == "CREATE" || type == "create")//creat table by TZH//分词时注意类型表名后面必须接 空格；主键不能接空格，必须直接接括号
-	{
+	else{
+		//分词时注意类型表名后面必须接 空格；主键不能接空格，必须直接接括号
+		if (type == "CREATE" || type == "create")//creat table by TZH
+		{
 			string tableName = "";//
 			vector<string> allwords = split(t, " (", ") ");
 			/*for (int i = 0; i < allwords.size(); i++)
@@ -292,13 +257,6 @@ Operation *parser(string t)
 			//cout << "primary key:" << primaryKey;
 			op = new CreateOperation(tableName, CTs, primaryKey);
 		}
-	else if (type == "INSERT" || type == "insert")
-	{
-
-	}
-	else if (type == "DELETE" || type == "delete")
-	{
-
 	}
 	return op;
 }

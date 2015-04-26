@@ -23,5 +23,3 @@
 #include "CreateOperation.h"
 #include "QueryOperation.h"
 #include "Disk.h"
-#include  "TableInfo.h"
-#include "TableManagement.h"
