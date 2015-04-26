@@ -5,8 +5,9 @@ public:
 	TableManagement();
 	~TableManagement();
 	vector<TableInfo> TableInfomation;
-	bool hasTable(string name);
-	bool hasColumn(string TableName, string ColumnName);
-	void addTable(TableInfo);
+	int hasTable(string name);
+	int hasColumn(string TableName, string ColumnName);
+	vector<TableInfo> getTablebyColumn(string Columnname);
+	int addTable(TableInfo);
 };
 
