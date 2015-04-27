@@ -1,4 +1,8 @@
 #pragma once
+struct TableInfo{
+	vector<ColumnTitle> Columns;
+	string Tablename;
+};
 class TableManagement
 {
 public:

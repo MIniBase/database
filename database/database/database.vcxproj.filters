@@ -45,9 +45,6 @@
     <ClInclude Include="DeleteOperation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TableInfo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TableManagement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -78,9 +75,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DeleteOperation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TableInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TableManagement.cpp">

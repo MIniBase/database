@@ -87,9 +87,14 @@ TableColumn TransTandC(string t)//×ª»» stringÀïÃæt.cÎª¾ßÌå±íÁĞ£¬selectÊ±Ê¹ÓÃ
 	vector<string> tandc = split(t, ".");
 	if (tandc.size() == 2)
 	{
-		temp.tableName = tandc.at(0);
-		temp.colunmName = tandc.at(1);
-		return temp;
+		if (TableManager.hasColumn(tandc.at(0), tandc.at(1))){
+			temp.tableName = tandc.at(0);
+			temp.colunmName = tandc.at(1);
+			return temp;
+		}
+		else{
+			throw  "Column " + tandc.at(1) + "Not Found In Table " + tandc.at(0);
+		}
 	}
 	else{
 		if (TableManager.getTablebyColumn(t).size() == 1)
@@ -99,12 +104,12 @@ TableColumn TransTandC(string t)//×ª»» stringÀïÃæt.cÎª¾ßÌå±íÁĞ£¬selectÊ±Ê¹ÓÃ
 			return temp;
 		}
 		else if (TableManager.getTablebyColumn(t).size() == 0){
-			cerr << "Column " << t << " Not Found" << endl;
-			abort();
+			throw  "Column " + t + " Not Found" ;
+			
 		}
 		else{
-			cerr << "Column " << t << " Found In Many Tables" << endl;
-			abort();
+			throw  "Column " + t + " Found In Many Tables" ;
+			
 		}
 	}
 }
@@ -128,14 +133,14 @@ ColumnTitle TransCandT(string t)//×ª»» stringÀïÃæa stringÎª¾ßÌå±íµÄÊôĞÔ£¬createÊ
 			temp.datatype = (DataType)4;
 		else
 		{
-			cerr << "Illegal Data Type" << endl;
-			abort();
+			throw "Illegal Data Type" ;
+			
 		}
 		return temp;
 	}
 	else{
-		cerr << "Illegal Input ColumnandTable" << endl;
-		abort();
+		throw "Illegal Input ColumnandTable" ;
+		
 	}
 }
 bool isNotConst(string t){//ÅĞ¶ÏÔËËã·ûÁ½²àµÄ×Ö·û´®ÊÇ³£Á¿·ñ
@@ -205,7 +210,7 @@ fuzhi:
 		temp.rightData = rd;
 	}
 	if (temp.isLeftConst&&temp.isRightConst)
-		cerr << "Condition Not Valid" << endl;
+		throw  "Condition Not Valid" ;
 	return temp;
 }
 bool issubQuery(string str)
@@ -249,11 +254,11 @@ Operation *parser(string t)
 		}
 		count++;
 		if (allwords.at(count) != "from"&&allwords.at(count) != "FROM"){
-			cerr << "Illegal Input";
+			throw  "KeyWord \"Fro\"m Not Found";
 		}
 		count++;
 		vector<string> table = split(allwords.at(count), ",");//»ñÈ¡±íÃû
-		if (selectallcolumns){
+		if (selectallcolumns){//Èç¹ûÊÇselect * £¬Ôò½«ËùÓĞ±íÖĞµÄËùÓĞÁĞ·Å½øTCÖĞ
 			for (int i = 0; i < table.size(); i++){
 				TableColumn temp;
 				if (TableManager.hasTable(table.at(i))){
@@ -264,12 +269,14 @@ Operation *parser(string t)
 						TC.push_back(temp);
 					}
 				}
+				else{
+					throw  "Table" + table.at(i) + " Not Found" ;
+				}
 			}
 		}
 		count++;
 		if (allwords.at(count) != "where"&&allwords.at(count) != "WHERE"){
-			cerr << "Illegal Input";
-			abort();
+			throw  "Keyword Where Not Found";
 		}
 		count++;
 		vector<string> equations = split(allwords.at(count), ",");//Ìõ¼şÓÃ,·Ö´Ê
@@ -277,7 +284,7 @@ Operation *parser(string t)
 		for (int i = 0; i < equations.size(); i++)
 		{
 			conds.push_back(Transcond(equations.at(i)));
-		} 
+		}
 		op = new QueryOperation(TC, table, conds);
 	}
 	else if(type == "CREATE" || type == "create")//creat table by TZH//·Ö´ÊÊ±×¢ÒâÀàĞÍ±íÃûºóÃæ±ØĞë½Ó ¿Õ¸ñ£»Ö÷¼ü²»ÄÜ½Ó¿Õ¸ñ£¬±ØĞëÖ±½Ó½ÓÀ¨ºÅ
@@ -301,8 +308,7 @@ Operation *parser(string t)
 
 			string keyCmp = split(columnAndType.at(columnAndType.size() - 1), "(", ")").at(0);
 			if ("primary key" != keyCmp && keyCmp != "PRIMARY KEY"){
-				cerr << "Illegal input,need primary key";
-				abort();
+				throw  "Illegal input,need primary key";
 			}
 			string primaryKey = split(columnAndType.at(columnAndType.size() - 1), "(", ")").at(1);
 
