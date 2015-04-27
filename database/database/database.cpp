@@ -1,6 +1,6 @@
 #include "stdafx.h"
 using namespace std;
-
+TableManagement TableManager;
 //字符串分割函数
 vector<string> split(string str, string pattern)
 {
@@ -92,8 +92,20 @@ TableColumn TransTandC(string t)//转换 string里面t.c为具体表列，select时使用
 		return temp;
 	}
 	else{
-		cerr << "Illegal Input ColumnandTable" << endl;
-		abort();
+		if (TableManager.getTablebyColumn(t).size() == 1)
+		{
+			temp.tableName = TableManager.getTablebyColumn(t).at(0).Tablename;
+			temp.colunmName = t;
+			return temp;
+		}
+		else if (TableManager.getTablebyColumn(t).size() == 0){
+			cerr << "Column " << t << " Not Found" << endl;
+			abort();
+		}
+		else{
+			cerr << "Column " << t << " Found In Many Tables" << endl;
+			abort();
+		}
 	}
 }
 
@@ -210,7 +222,6 @@ bool iscolandtab(string str)
 	else
 		return false;
 }
-Table findtables(string tablename);
 
 Operation *parser(string t)
 {
@@ -223,32 +234,38 @@ Operation *parser(string t)
 
 	if (type == "SELECT" || type == "select")//判断类型
 	{
-		vector<string> allwords = split(t, " ");//按照空格先分词
+		vector<string> allwords = splitnotbracket(t, " ");//按照空格先分词,如果是括号包裹的，先不分
+		vector<TableColumn> TC;
+		bool selectallcolumns=false;
 		count++;
 		vector<string> columnandtable = split(allwords.at(count), ",");
-		count++;
-		vector<TableColumn> TC;
-
-		for (int i = 0; i < columnandtable.size(); i++){//抽取表-列对应关系
-			TC.push_back(TransTandC(columnandtable.at(i)));
+		if (allwords.at(count) == "*"){
+			selectallcolumns = true;
 		}
+		else{
+			for (int i = 0; i < columnandtable.size(); i++){//抽取表-列对应关系
+				TC.push_back(TransTandC(columnandtable.at(i)));
+			}
+		}
+		count++;
 		if (allwords.at(count) != "from"&&allwords.at(count) != "FROM"){
 			cerr << "Illegal Input";
 		}
 		count++;
 		vector<string> table = split(allwords.at(count), ",");//获取表名
-		/*		vector<Table> tables;
-		for (int i = 0; i<tabledef.size(); i++)//把表准备好
-		{
-		if (issubQuery(tabledef.at(i)))
-		{
-		Operation *subquery = parser(tabledef.at(i));
-		tables.push_back(subquery.exec());
-		continue;
+		if (selectallcolumns){
+			for (int i = 0; i < table.size(); i++){
+				TableColumn temp;
+				if (TableManager.hasTable(table.at(i))){
+					temp.tableName = table.at(i);
+					vector<string> Column = TableManager.getColumnbyTable(temp.tableName);
+					for (int j = 0; j < Column.size(); j++){
+						temp.colunmName = Column.at(j);
+						TC.push_back(temp);
+					}
+				}
+			}
 		}
-		tables.push_back(findtables(tabledef.at(i)));
-		}
-		*/
 		count++;
 		if (allwords.at(count) != "where"&&allwords.at(count) != "WHERE"){
 			cerr << "Illegal Input";

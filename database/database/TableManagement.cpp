@@ -50,3 +50,15 @@ vector<TableInfo> TableManagement::getTablebyColumn(string ColumnName){
 	}
 	return Tables;
 }
+vector<string> TableManagement::getColumnbyTable(string TableName){
+	vector<string> Column;
+	for (int i = 0; i < TableInfomation.size(); i++)
+	{
+		if (TableInfomation.at(i).Tablename == TableName)
+		{
+			for (int j = 0; j < TableInfomation.at(i).Columns.size(); j++)
+				Column.push_back(TableInfomation.at(i).Columns.at(j).column_name);
+			return Column;
+		}
+	}
+}
