@@ -473,18 +473,18 @@ Operation *parser(string t)
 int main()
 {
 	/*parser("select ab,c,d from e,f where ab>1");*/
-	//freopen("in2.txt", "r", stdin);
+	freopen("in2.txt", "r", stdin);
 	cout << "MIniBase Beta 0.9\n";
 	string input;
 	while (!cin.eof()){
-		cout << "MIniBase>";
+		//cout << "MIniBase>";
 		getline(cin, input);
 		try{
 			Operation* operation = parser(input);
 			//operation->exec();
 			Table& result = operation->exec();
-			cout << "success! " << result.data.size() << " rows affected\n";
-			cout << "--------" << result.tableName <<"------------"<< endl;
+			//cout << "success! " << result.data.size() << " rows affected\n";
+			//cout << "--------" << result.tableName <<"------------"<< endl;
 			
 			result.showTable();
 
